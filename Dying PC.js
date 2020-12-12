@@ -11,8 +11,9 @@ let template =
 
 <form>
 	<p>Token: <span style="color: darkred">${token.name}</span></p>
-	<p>Critical Hit? <input type="checkbox" id="critical" style="width: 80px" value="true" /></p>
-	<p>Roll recovery checks automatically? <input type="checkbox" id="rollChecks" style="width: 80px" value="true" Checked /></p>
+	<p>Recovery check success? <input type="checkbox" id="recover" style="width: 80px" value="true" /></p>
+	<p>Critical? <input type="checkbox" id="critical" style="width: 80px" value="true" /></p>
+	<p>Add automatic recovery check TurnAlert? <input type="checkbox" id="rollChecks" style="width: 80px" value="true" /></p>
 </form>`;
 
 let mustRoll = false;
@@ -35,36 +36,71 @@ new Dialog({
     close: html => {
         if (mustRoll) {
             (async () => {
-				var woundValue = canvas.tokens.controlled[0].actor.data.data.attributes.wounded.value;
-                let cValue = 1;
+				debugger;
+				const recover = html.find("#recover")[0].checked;
+				var woundValue = token.actor.data.data.attributes.wounded.value;
+                var dyingValue = token.actor.data.data.attributes.dying.value;
+				if (recover && dyingValue == 0)
+				{
+					ui.notifications.warn("You are not dying.");
+					return;
+				}
+				let cValue = 1;
 				let critical = html.find("#critical")[0].checked;
 				let rollChecks = html.find("#rollChecks")[0].checked;
                 if (critical)
 					cValue++;
-				cValue = cValue + woundValue;
-				woundValue++;
-                let condition = await PF2eConditionManager.getCondition("Dying");
-                await PF2eConditionManager.addConditionToToken(condition, token);
-                await updateHUD("Dying");
-				if (woundValue == 1)
+				if (dyingValue == 0)
+					cValue = cValue + woundValue;
+				let condition = await PF2eConditionManager.getCondition("Dying");
+				if (dyingValue == 0)
+				{
+					woundValue++;
+                    await PF2eConditionManager.addConditionToToken(condition, token);
+					await PF2eConditionManager.updateConditionValue(token.actor.data.items.find((x) => x.name == "Dying")._id, token, cValue)
+					await updateHUD("Dying");
+				}
+				else if (!recover)
+				{
+					await PF2eConditionManager.updateConditionValue(token.actor.data.items.find((x) => x.name == "Dying")._id, token, dyingValue + cValue)
+					await updateHUD("Dying");
+				}
+				if (recover && cValue >= dyingValue)
+					await PF2eConditionManager.removeConditionFromToken(token.actor.data.items.find((x) => x.name == "Dying")._id, token);
+				else if (recover)
+				{
+					await PF2eConditionManager.updateConditionValue(token.actor.data.items.find((x) => x.name == "Dying")._id, token, dyingValue - cValue)
+					await updateHUD("Dying");
+				}
+				
+				if (woundValue == 1 && dyingValue == 0)
 				{
 					condition = await PF2eConditionManager.getCondition("Wounded");
 					await PF2eConditionManager.addConditionToToken(condition, token);
 				}
-				else
+				else if (dyingValue == 0)
 				{
 					await PF2eConditionManager.updateConditionValue(token.actor.data.items.find((x) => x.name == "Wounded")._id, token, woundValue)
 				}
                 await updateHUD("Wounded");
-				await updateHUD("Unconscious");
+				if (!(recover && cValue >= dyingValue))
+				{
+					await updateHUD("Unconscious");
+					await updateHUD("Blinded");
+				}
 				await updateHUD("Prone");
-				await updateHUD("Blinded");
 				await updateHUD("Flat-Footed");
-                
+
                 await PF2eStatusEffects._createChatMessage(token)
-                await addWD("dying",cValue);
+                if (!recover)
+					cValue += dyingValue;
+				else
+					cValue = Math.max(dyingValue - cValue,0);
+					
+				await addWD("dying",cValue);
                 await addWD("wounded", woundValue);
-                await changeInit();
+                if (dyingValue == 0 && !recover)
+					await changeInit();
 				if (rollChecks)
 				{
 					const alertData = {
@@ -80,6 +116,12 @@ new Dialog({
 						endOfTurn: false,
 					}
 					TurnAlert.create(alertData);
+				}
+				if (cValue == 0)
+				{
+					let alert = TurnAlert.getAlertByName("Recovery Check",game.combat.data._id);
+					if (alert)
+						TurnAlert.delete(game.combat.data._id,alert.id);
 				}
             })();
         }
@@ -102,7 +144,7 @@ function updateHUD(type) {
 
 function addWD(type,cValue) {
     console.log(cValue)
-    if(cValue > 0 && cValue <= 4) {
+    if(cValue >= 0 && cValue <= 4) {
 		if (type == "dying")
 			actor.update({"data.attributes.dying.value":cValue})
 		else
