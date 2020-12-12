@@ -35,7 +35,6 @@ new Dialog({
     close: html => {
         if (mustRoll) {
             (async () => {
-				debugger;
 				var woundValue = canvas.tokens.controlled[0].actor.data.data.attributes.wounded.value;
                 let cValue = 1;
 				let critical = html.find("#critical")[0].value;
@@ -65,6 +64,7 @@ new Dialog({
                 await addWD("dying",cValue);
                 await addWD("wounded", woundValue);
                 await changeInit();
+				await 
             })();
         }
         if (clearFX) {
