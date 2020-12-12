@@ -10,10 +10,10 @@ let template =
     `
 
 <form>
-      <p>Token: <span style="color: darkred">${token.name}</span></p>
-      <input type="hidden" id="critical" value="false"/>
-    <p>Critical Hit? <input type="checkbox" id="critical" style="width: 80px" value="true" /></p>
-  </form>`;
+	<p>Token: <span style="color: darkred">${token.name}</span></p>
+	<p>Critical Hit? <input type="checkbox" id="critical" style="width: 80px" value="true" /></p>
+	<p>Roll recovery checks automatically? <input type="checkbox" id="rollChecks" style="width: 80px" value="true" Checked /></p>
+</form>`;
 
 let mustRoll = false;
 let clearFX = false;
@@ -37,9 +37,10 @@ new Dialog({
             (async () => {
 				var woundValue = canvas.tokens.controlled[0].actor.data.data.attributes.wounded.value;
                 let cValue = 1;
-				let critical = html.find("#critical")[0].value;
-                if (critical == "true")
-					cValue = 2;
+				let critical = html.find("#critical")[0].checked;
+				let rollChecks = html.find("#rollChecks")[0].checked;
+                if (critical)
+					cValue++;
 				cValue = cValue + woundValue;
 				woundValue++;
                 let condition = await PF2eConditionManager.getCondition("Dying");
@@ -64,7 +65,22 @@ new Dialog({
                 await addWD("dying",cValue);
                 await addWD("wounded", woundValue);
                 await changeInit();
-				await 
+				if (rollChecks)
+				{
+					const alertData = {
+						combatId: game.combat.data._id,
+						name: "Recovery Check",
+						createdRound: game.combat.data.round,
+						turnId: game.combat.getCombatantByToken(token.data._id)._id,
+						round: 1,
+						macro: "RecoveryCheck",
+						repeating: {frequency: 1, expire: 0, expireAbsolute: false},
+						roundAbsolute: false,
+						userId: game.userId,
+						endOfTurn: false,
+					}
+					TurnAlert.create(alertData);
+				}
             })();
         }
         if (clearFX) {
