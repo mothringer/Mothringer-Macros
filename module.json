@@ -1,0 +1,20 @@
+{
+  "name": "mothringer-macros",
+  "title": "Mothringers's PF2E Macro Collection",
+  "description": "Macros collection including all Macros I use in my PF2E games",
+  "version": "1.0",
+  "minimumCoreVersion": "0.7.0",
+  "compatibleCoreVersion": "0.7.8",
+  "author": "Mothringer",
+  "packs": [
+    {
+      "name": "mothringer-macros",
+      "label": "Mothringer's Macros",
+      "path": "/packs/mothringer-macros.db",
+      "entity": "Macro"
+    } 
+  ],
+  "url": "https://github.com/mothringer/Mothringer-Macros/tree/main",
+  "manifest": "https://raw.githubusercontent.com/mothringer/Mothringer-Macros/main/module.json",
+  "download": "https://raw.githubusercontent.com/mothringer/Mothringer-Macros/main/mothringer-macros.zip"
+}
