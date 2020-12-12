@@ -11,9 +11,10 @@ let template =
 
 <form>
 	<p>Token: <span style="color: darkred">${token.name}</span></p>
-	<p>Recovery check success? <input type="checkbox" id="recover" style="width: 80px" value="true" /></p>
-	<p>Critical? <input type="checkbox" id="critical" style="width: 80px" value="true" /></p>
-	<p>Add automatic recovery check TurnAlert? <input type="checkbox" id="rollChecks" style="width: 80px" value="true" /></p>
+	<p><input type="checkbox" id="recover" style="width: 80px margin: 0 5px 0 5px" value="true" />Recovery check success?</p>
+	<p><input type="checkbox" id="critical" style="width: 80px margin: 0 5px 0 5px" value="true" />Critical?</p>
+	<p><input type="checkbox" id="rollChecks" style="width: 80px margin: 0 5px 0 5px" value="true" />Add automatic recovery check TurnAlert?</p>
+	<p><input type="checkbox" id="removeWounded" style="width: 80px margin: 0 5px 0 5px" value="true" />Remove wounded condition?</p>
 </form>`;
 
 let mustRoll = false;
@@ -36,7 +37,12 @@ new Dialog({
     close: html => {
         if (mustRoll) {
             (async () => {
-				debugger;
+				if (html.find("#removeWounded")[0].checked)
+				{
+					await PF2eConditionManager.removeConditionFromToken(token.actor.data.items.find((x) => x.name == "Wounded")._id, token);
+					await addWD("wounded", 0);
+					return;
+				}
 				const recover = html.find("#recover")[0].checked;
 				var woundValue = token.actor.data.data.attributes.wounded.value;
                 var dyingValue = token.actor.data.data.attributes.dying.value;
