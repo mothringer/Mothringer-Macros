@@ -1,3 +1,4 @@
+if (!token) return ui.notifications.error(`You must select yourself.`);
 const rollTreatWounds = async ({DC, bonus, med, name}) => {
   const checkRoll = new Roll(`1d20 + ${med.value}`).roll();
   ChatMessage.create({

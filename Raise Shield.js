@@ -28,7 +28,7 @@ if (!actor) {
 if (messageContent !== '') {
     let chatData = {
         user: game.user._id,
-        speaker: ChatMessage.getSpeaker(),
+        speaker: ChatMessage.getSpeaker(token),
         content: messageContent,
     };
     ChatMessage.create(chatData, {});

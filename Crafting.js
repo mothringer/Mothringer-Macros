@@ -1,3 +1,4 @@
+if (!token) return ui.notifications.error(`You must select yourself.`);
 let toChat = (content) => {
   let chatData = {
     user: game.user.id,

@@ -21,3 +21,5 @@ Earn Income
 Condition Setter
 
 Dying PC
+
+## Credit to Hermann at https://github.com/hermannm/foundrymacros for the combat skill check macros, slightly modified

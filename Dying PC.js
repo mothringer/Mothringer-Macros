@@ -4,8 +4,6 @@ ui.notifications.warn("You must select yourself.");
 return
 }
 
-if(!game.combats.active) return ui.notifications.error(`No active combat.`);
-
 let template =
 	`
 
@@ -105,9 +103,10 @@ new Dialog({
 					
 				await addWD("dying",cValue);
 				await addWD("wounded", woundValue);
-				if (dyingValue == 0 && !recover)
+				if (dyingValue == 0 && !recover && game.combats.active)
 					await changeInit();
-				if (rollChecks)
+
+				if (rollChecks && game.combats.active)
 				{
 					const alertData = {
 						combatId: game.combat.data._id,
