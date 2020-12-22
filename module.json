@@ -4,8 +4,9 @@
   "description": "Macros collection including all Macros I use in my PF2E games",
   "version": "1.1",
   "minimumCoreVersion": "0.7.0",
-  "compatibleCoreVersion": "0.7.8",
+  "compatibleCoreVersion": "0.7.9",
   "author": "Mothringer",
+  "system": "pf2e",
   "packs": [
     {
       "name": "mothringer-macros",
