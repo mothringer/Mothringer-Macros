@@ -5,6 +5,8 @@ Dying PC and Condition Setter require the TurnAlert and The Forge modules in add
 
 To install in your world as a module, paste https://raw.githubusercontent.com/mothringer/Mothringer-Macros/main/module.json into the manifest URL field in the module installer.
 
+The Light and Vision macro assumes that perfect vision is installed for low-light vision. If you do not have that module, you should choose normal vision instead for characters with low light vision.
+
 
 ## Credit to LiquidSonic at https://gitlab.com/LiquidSonic/PF2E-Macros for creating the below macros:
 Rest for the Night

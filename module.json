@@ -2,7 +2,7 @@
   "name": "mothringer-macros",
   "title": "Mothringers's PF2E Macro Collection",
   "description": "Macros collection including all Macros I use in my PF2E games",
-  "version": "1.1",
+  "version": "1.2",
   "minimumCoreVersion": "0.7.0",
   "compatibleCoreVersion": "0.7.9",
   "author": "Mothringer",
@@ -17,5 +17,5 @@
   ],
   "url": "https://github.com/mothringer/Mothringer-Macros/tree/main",
   "manifest": "https://raw.githubusercontent.com/mothringer/Mothringer-Macros/main/module.json",
-  "download": "https://raw.githubusercontent.com/mothringer/Mothringer-Macros/main/mothringer-macros.zip"
+  "download": "https://raw.githubusercontent.com/mothringer/Mothringer-Macros/main/Mothringer-Macros.zip"
 }
